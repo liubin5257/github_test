@@ -4,7 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -20,6 +23,7 @@ import android.view.Window;
 import com.stone.richeditor.RichTextEditor.EditData;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -44,11 +48,19 @@ public class MainActivity extends FragmentActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
+
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
-
+		/*Resources res = getResources();
+		Drawable drawable = res.getDrawable(R.color.colorAccent);
+		this.getWindow().getDecorView().setBackgroundDrawable(drawable);*/
 		editor = (RichTextEditor) findViewById(R.id.richEditor);
+		//01-24 02:44:52.465 D/Danny   (29728): the filepath =  /storage/emulated/0/DCIM/C
+		//amera/IMG_20120124_021809.jpg
+
+
 		btnListener = new OnClickListener() {
 
 			@Override
@@ -62,10 +74,24 @@ public class MainActivity extends FragmentActivity {
 				} else if (v.getId() == btn2.getId()) {
 					// 打开相机
 					openCamera();
-				} else if (v.getId() == btn3.getId()) {
-					List<EditData> editList = editor.buildEditData();
-					// 下面的代码可以上传、或者保存，请自行实现
-					dealEditData(editList);
+				} else {
+					if (v.getId() == btn3.getId()) {
+
+						editor.setContent("435345325");//<img>/storage/emulated/0/DCIM/Camera/IMG_20120124_021809.jpg</img><img>/storage/emulated/0/DCIM/Camera/IMG_20120124_021809.jpg</img>");
+						/*List<EditData> editList = editor.buildEditData();
+						// 下面的代码可以上传、或者保存，请自行实现
+						dealEditData(editList);
+						Bitmap bmp = editor.getDrawingCache();
+						File cache = new File(PHOTO_DIR, "cacher.jpg");
+						try {
+						FileOutputStream fos = new FileOutputStream(cache);
+							fos.flush();
+							fos.close();
+						}catch (Exception e){
+
+						}*/
+
+					}
 				}
 			}
 		};
@@ -128,6 +154,7 @@ public class MainActivity extends FragmentActivity {
 
 		if (requestCode == REQUEST_CODE_PICK_IMAGE) {
 			Uri uri = data.getData();
+			Log.d("Danny", "the uri =  "+uri+"getRealFilePath(uri) = ="+getRealFilePath(uri));
 			insertBitmap(getRealFilePath(uri));
 		} else if (requestCode == REQUEST_CODE_CAPTURE_CAMEIA) {
 			insertBitmap(mCurrentPhotoFile.getAbsolutePath());
